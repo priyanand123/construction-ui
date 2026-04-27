@@ -32,7 +32,8 @@ const TableCmp = ({
   disablePagination, // Add the new prop here
   manualFilters,
   onColumnFilter,
-  masterTitle
+  masterTitle,
+   onFullExport   // 🔥 ADD THIS
 }) => {
 console.log(masterTitle,"masterTitle") ;  
   const defaultColumn = React.useMemo(
@@ -154,6 +155,9 @@ console.log(masterTitle,"masterTitle") ;
         tableDataChange={tableData}
         hideDownloadBtns={!!hideDownloadBtns}
         hideSearchFilter={!!hideSearchFilter}
+        displayedTableData={page.map((row) => row.original)}
+        onFullExport={onFullExport}
+        
       />
       <div className="table-responsive">
         <table

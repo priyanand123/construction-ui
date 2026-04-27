@@ -17,6 +17,7 @@ const TableCmpHeader = (props) => {
     tableDataChange,
     hideDownloadBtns,
     hideSearchFilter,
+    displayedTableData, 
   } = props;
 
   const [pageSize, setpageSize] = useState(10);
@@ -167,6 +168,15 @@ const TableCmpHeader = (props) => {
             filename={configData?.masterTitle}
           />
         </div>
+       {props.onFullExport && (
+  <button
+    type="button"
+    className="t_btn rounded-1 btn-sm my-1"
+    onClick={() => props.onFullExport(displayedTableData)}
+  >
+    <i class="fa fa-download"></i> Full Excel
+  </button>
+)}
       </div>
     </TableHeaderContainer>
   );

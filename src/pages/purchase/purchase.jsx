@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { exportToExcel } from "../../app/components/tableCmp/_functions";
 import Swal from "sweetalert2";
 import ModalForm from "../../app/components/modalForm/purchasemodelForm";
 import {
@@ -41,6 +42,57 @@ const Purchase = () => {
 
     if (!purchase.loading) return setdataLoading(false);
   }, [purchase?.loading]);
+
+  const handleFullExport = (filteredData) => {
+  const fullData =
+    filteredData && filteredData.length > 0
+      ? filteredData   // ✅ filtered table data
+      : purchase.data; // fallback (all data)
+
+  const headers = [
+    "Material Name",
+    "Units",
+    "Brand Name",
+    "Purchase Company",
+    "Purchase Date",
+    "Bill No",
+    "Bill Date",
+    "GST No",
+    "GST %",
+    "GST Amount",
+    "Amount",
+    "Loading Cost",
+    "Total",
+    "Vehicle No",
+    "Vehicle Phone",
+    "Payment Details",
+    "Address",
+    "Transport Details"
+  ];
+
+  const rows = fullData.map((item) => [
+    item.materialName,
+    item.unitId,
+    item.brandName,
+    item.purchaseCompany,
+    item.purchaseDate,
+    item.billNo,
+    item.billDate,
+    item.gstNo,
+    item.gstPercentage,
+    item.gstAmount,
+    item.amount,
+    item.loadingAndUnloadingCost,
+    item.totalCost,
+    item.vehicleNo,
+    item.vehiclephoneNo,
+    item.paymentDetails,
+    item.address,
+    item.transportDetails
+  ]);
+
+  exportToExcel(headers, rows, "Purchase_Data");
+};
   const handleFieldChange = (fieldName, value, formValues) => {
     debugger;
     if (fieldName === "amount" || fieldName === "gstPercentage" || fieldName === "loadingAndUnloadingCost") {
@@ -686,6 +738,7 @@ const Purchase = () => {
           editable={true}
           deleteable={true}
           viewable={true}
+            onFullExport={handleFullExport}   // ✅ ADD THIS LINE
         />
       </TableContainer>
       <ModalForm

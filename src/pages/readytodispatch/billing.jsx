@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 
 import ModalForm from "../../app/components/modalForm/billingaggridmodelForm";
+import { exportToExcel } from "../../app/components/tableCmp/_functions";
 
 import {
 
@@ -141,8 +142,57 @@ const Billing = () => {
       setdataLoading(false);
     }
   }, [billing?.data]);
+const handleFullExportBilling = (filteredData) => {
+  const fullData =
+    filteredData && filteredData.length > 0
+      ? filteredData
+      : formatedData;
 
+  if (!fullData || fullData.length === 0) {
+    alert("No data to export");
+    return;
+  }
 
+  const headers = [
+    "Invoice No",
+    "Consignee Details",
+    "Date",
+    "Delivery Note",
+    "Reference No",
+    "Buyer Order No",
+    "Total Qty",
+    "Total Amount",
+    "CGST",
+    "SGST",
+    "Taxable Value",
+    "Total Tax Amount",
+    "Vehicle No",
+    "Delivery Person",
+    "Phone No",
+    "Terms Of Delivery"
+  ];
+
+  const rows = fullData.map((item) => [
+    item.dispatchDocNo || "",
+    item.consigneeDetails || "",
+    item.dated || "",
+    item.deliveryNote || "",
+    item.referenceNo || "",
+    item.buyersOrderNo || "",
+    item.totalQty || "",
+    item.totalAmount || "",
+    item.CGSTAmount || "",
+    item.SGSTAmount || "",
+    item.taxableValue || "",
+    item.totalTaxAmount || "",
+    item.motorVehicleNo || "",
+    item.deliveryManName || "",
+    item.deliveryManPhoneNo || "",
+    item.termsOfDelivery || ""
+  ]);
+
+  exportToExcel(headers, rows, "Billing_Data");
+};
   const handleMaterialDataChange = (updatedData) => {
 
     setgoodsInformation(updatedData); // Update state with the modified material data
@@ -1138,8 +1188,7 @@ const Billing = () => {
           deleteable={true}
 
           viewable={true}
-
-        />
+onFullExport={handleFullExportBilling}         />
       </TableContainer>
       <ModalForm
 
