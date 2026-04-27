@@ -1083,7 +1083,23 @@ const handleFullExportBilling = (filteredData) => {
 
     },
 
+    {
 
+      label: "Delivery Note",
+
+      name: "deliveryNote",
+
+      type: "textarea",
+
+      maxLength: 1000,
+
+      required: true,
+
+      placeholder: "Max 2000 characters",
+
+      className: "col-lg-6 col-md-12",
+
+    },
 
     {
 
@@ -1099,7 +1115,7 @@ const handleFullExportBilling = (filteredData) => {
 
 
 
-      className: "col-lg-12 col-md-12",
+      className: "col-lg-6 col-md-12",
 
     },
 
@@ -1125,9 +1141,9 @@ const handleFullExportBilling = (filteredData) => {
 
     {
 
-      label: "Delivery Note",
+      label: "Buyer(Bill to)",
 
-      name: "deliveryNote",
+      name: "buyer",
 
       type: "textarea",
 
