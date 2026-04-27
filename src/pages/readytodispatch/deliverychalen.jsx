@@ -155,27 +155,9 @@ const DeliveryChalen = () => {
 
 
 
-      // ✅ Ensure old → new (new record last)
-
-      // const sortedData = [...formattedData].sort(
-
-      // (a, b) => new Date(a.dated) - new Date(b.dated)
-
-      // );
-
-
-
-      // setformatedData(sortedData);
-
-      const sortedData = formattedData.sort(
-
-        (a, b) => Number(a.id) - Number(b.id)
-
-      );
-
-      setformatedData([...formattedData]);
-
-
+      // Sort by id ascending so newest record always appears last
+      const sortedData = [...formattedData].sort((a, b) => Number(a.id) - Number(b.id));
+      setformatedData(sortedData);
 
       setdataLoading(false);
 
@@ -271,13 +253,14 @@ const DeliveryChalen = () => {
 
   const calculateTotals = (formData) => {
 
+    // Robustly handle all formats: true, false, 1, 0, "1", "0", "true", "false", "on"
+    const raw = formData?.isGSTInclude;
     const isGST =
-
-      formData?.isGSTInclude === true ||
-
-      formData?.isGSTInclude === 1 ||
-
-      formData?.isGSTInclude === "1";
+      raw === true ||
+      raw === 1 ||
+      raw === "1" ||
+      raw === "true" ||
+      raw === "on";
 
 
 
@@ -832,7 +815,12 @@ const DeliveryChalen = () => {
 
       className: "col-lg-4 col-md-12",
 
-      defaultValue: true, // or false depending on default
+      defaultValue: true,
+
+      // Locked on edit: GST type cannot change after creation (separate DocNo sequences)
+      disabled: !!dataToEdit,
+
+      removeDisable: false,
 
     },
 

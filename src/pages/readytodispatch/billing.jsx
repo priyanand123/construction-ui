@@ -138,61 +138,63 @@ const Billing = () => {
         referenceDate: moment(item.referenceDate).format("YYYY-MM-DD"),
       }));
 
-      setformatedData(formattedData);   // ✅ USE THIS
+      // Sort by id ascending so newest record always appears last
+      const sortedData = [...formattedData].sort((a, b) => Number(a.id) - Number(b.id));
+      setformatedData(sortedData);
       setdataLoading(false);
     }
   }, [billing?.data]);
-const handleFullExportBilling = (filteredData) => {
-  const fullData =
-    filteredData && filteredData.length > 0
-      ? filteredData
-      : formatedData;
+  const handleFullExportBilling = (filteredData) => {
+    const fullData =
+      filteredData && filteredData.length > 0
+        ? filteredData
+        : formatedData;
 
-  if (!fullData || fullData.length === 0) {
-    alert("No data to export");
-    return;
-  }
+    if (!fullData || fullData.length === 0) {
+      alert("No data to export");
+      return;
+    }
 
-  const headers = [
-    "Invoice No",
-    "Consignee Details",
-    "Date",
-    "Delivery Note",
-    "Reference No",
-    "Buyer Order No",
-    "Total Qty",
-    "Total Amount",
-    "CGST",
-    "SGST",
-    "Taxable Value",
-    "Total Tax Amount",
-    "Vehicle No",
-    "Delivery Person",
-    "Phone No",
-    "Terms Of Delivery"
-  ];
+    const headers = [
+      "Invoice No",
+      "Consignee Details",
+      "Date",
+      "Delivery Note",
+      "Reference No",
+      "Buyer Order No",
+      "Total Qty",
+      "Total Amount",
+      "CGST",
+      "SGST",
+      "Taxable Value",
+      "Total Tax Amount",
+      "Vehicle No",
+      "Delivery Person",
+      "Phone No",
+      "Terms Of Delivery"
+    ];
 
-  const rows = fullData.map((item) => [
-    item.dispatchDocNo || "",
-    item.consigneeDetails || "",
-    item.dated || "",
-    item.deliveryNote || "",
-    item.referenceNo || "",
-    item.buyersOrderNo || "",
-    item.totalQty || "",
-    item.totalAmount || "",
-    item.CGSTAmount || "",
-    item.SGSTAmount || "",
-    item.taxableValue || "",
-    item.totalTaxAmount || "",
-    item.motorVehicleNo || "",
-    item.deliveryManName || "",
-    item.deliveryManPhoneNo || "",
-    item.termsOfDelivery || ""
-  ]);
+    const rows = fullData.map((item) => [
+      item.dispatchDocNo || "",
+      item.consigneeDetails || "",
+      item.dated || "",
+      item.deliveryNote || "",
+      item.referenceNo || "",
+      item.buyersOrderNo || "",
+      item.totalQty || "",
+      item.totalAmount || "",
+      item.CGSTAmount || "",
+      item.SGSTAmount || "",
+      item.taxableValue || "",
+      item.totalTaxAmount || "",
+      item.motorVehicleNo || "",
+      item.deliveryManName || "",
+      item.deliveryManPhoneNo || "",
+      item.termsOfDelivery || ""
+    ]);
 
-  exportToExcel(headers, rows, "Billing_Data");
-};
+    exportToExcel(headers, rows, "Billing_Data");
+  };
   const handleMaterialDataChange = (updatedData) => {
 
     setgoodsInformation(updatedData); // Update state with the modified material data
@@ -279,11 +281,14 @@ const handleFullExportBilling = (filteredData) => {
 
   const calculateTotals = (formData) => {
 
+    // Robustly handle all formats: true, false, 1, 0, "1", "0", "true", "false", "on"
+    const raw = formData?.isGSTInclude;
     const isGST =
-
-      formData?.isGSTInclude === true ||
-
-      formData?.isGSTInclude == 1;
+      raw === true ||
+      raw === 1 ||
+      raw === "1" ||
+      raw === "true" ||
+      raw === "on";
 
 
 
@@ -538,10 +543,9 @@ const handleFullExportBilling = (filteredData) => {
 
 
       await deleteBilling(rowData.id, dispatch);
-
+      await dispatch(fetchBillingList());
       Swal.fire("Success", "Billing deleted!", "success");
-
-      setdataLoading(true);
+      setdataLoading(false);
 
     } catch (error) {
 
@@ -730,9 +734,11 @@ const handleFullExportBilling = (filteredData) => {
 
       required: true,
 
-      placeholder: "Max 50 characters",
+      placeholder: "Auto-generated",
 
       className: "col-lg-4 col-md-12",
+
+      disabled: !!dataToEdit, // read-only on edit — DocNo is locked once created
 
     },
 
@@ -1113,7 +1119,11 @@ const handleFullExportBilling = (filteredData) => {
 
       required: true,
 
+      // Locked on edit: GST type cannot change after creation.
+      // Changing GST type requires delete + re-insert (sequence is separate per type).
+      disabled: !!dataToEdit,
 
+      removeDisable: false,
 
       className: "col-lg-6 col-md-12",
 
@@ -1204,7 +1214,7 @@ const handleFullExportBilling = (filteredData) => {
           deleteable={true}
 
           viewable={true}
-onFullExport={handleFullExportBilling}         />
+          onFullExport={handleFullExportBilling} />
       </TableContainer>
       <ModalForm
 
