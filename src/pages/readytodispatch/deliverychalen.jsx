@@ -697,38 +697,15 @@ const DeliveryChalen = () => {
   const formItems = [
 
 
-
-
-
     {
 
-      label: "Dispatched Through",
+      label: "Delivery Note Date",
 
-      name: "dispatchedThrough",
+      name: "deliveryNoteDate",
 
-      type: "text",
-
-      maxLength: 100,
-
-      required: true,
-
-      placeholder: "Max 100 characters",
-
-      className: "col-lg-4 col-md-12",
-
-    },
+      type: "date",
 
 
-
-    {
-
-      label: "Motor Vehicle No",
-
-      name: "motorVehicleNo",
-
-      type: "text",
-
-      maxLength: 50,
 
       required: true,
 
@@ -736,11 +713,9 @@ const DeliveryChalen = () => {
 
       className: "col-lg-4 col-md-12",
 
+      defaultValue: dayjs().format("YYYY-MM-DD"),
+
     },
-
-
-
-
     {
 
       label: "Delivery Person Name",
@@ -781,17 +756,15 @@ const DeliveryChalen = () => {
 
     },
 
-
-
     {
 
-      label: "Delivery Note Date",
+      label: "Motor Vehicle No & Driver Name",
 
-      name: "deliveryNoteDate",
+      name: "motorVehicleNo",
 
-      type: "date",
+      type: "text",
 
-
+      maxLength: 50,
 
       required: true,
 
@@ -799,10 +772,25 @@ const DeliveryChalen = () => {
 
       className: "col-lg-4 col-md-12",
 
-      defaultValue: dayjs().format("YYYY-MM-DD"),
-
     },
 
+    {
+
+      label: "Dispatched Through",
+
+      name: "dispatchedThrough",
+
+      type: "text",
+
+      maxLength: 100,
+
+      required: true,
+
+      placeholder: "Max 100 characters",
+
+      className: "col-lg-4 col-md-12",
+
+    },
 
 
     {
@@ -821,6 +809,23 @@ const DeliveryChalen = () => {
       disabled: !!dataToEdit,
 
       removeDisable: false,
+
+    },
+    {
+
+      label: "Consignee Details",
+
+      name: "consigneeDetails",
+
+      type: "textarea",
+
+      maxLength: 2000,
+
+      required: true,
+
+      placeholder: "Max 510 characters",
+
+      className: "col-lg-6 col-md-12",
 
     },
 
@@ -842,23 +847,7 @@ const DeliveryChalen = () => {
 
     },
 
-    {
 
-      label: "Consignee Details",
-
-      name: "consigneeDetails",
-
-      type: "textarea",
-
-      maxLength: 2000,
-
-      required: true,
-
-      placeholder: "Max 510 characters",
-
-      className: "col-lg-6 col-md-12",
-
-    },
 
   ];
 

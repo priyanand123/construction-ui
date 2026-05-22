@@ -953,23 +953,7 @@ const Billing = () => {
 
     },
 
-    {
 
-      label: "Bill Of Lading/ LR RR No",
-
-      name: "billOfLadingLrRrNo",
-
-      type: "text",
-
-      maxLength: 50,
-
-      required: true,
-
-      placeholder: "Max 50 characters",
-
-      className: "col-lg-4 col-md-12",
-
-    },
 
     {
 

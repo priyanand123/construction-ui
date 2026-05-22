@@ -1,9 +1,11 @@
 import { Icon } from "@iconify/react";
 import { matchSorter } from "match-sorter";
 import React, { memo } from "react";
-import { FaEdit, FaTrashAlt, FaEye,FaDownload } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaPrint } from "react-icons/fa";
 import { publicAxios } from "../../../api/config.js";
 import { ApiKey } from "../../../api/endpoints.js";
+import { useNavigate } from "react-router-dom";
+import { routePath } from "../../routes/routepath";
 import TableCmpHeader from "./tableHeader";
 import {
   useAsyncDebounce,
@@ -33,9 +35,9 @@ const TableCmp = ({
   manualFilters,
   onColumnFilter,
   masterTitle,
-   onFullExport   // 🔥 ADD THIS
+  onFullExport   // 🔥 ADD THIS
 }) => {
-console.log(masterTitle,"masterTitle") ;  
+  console.log(masterTitle, "masterTitle");
   const defaultColumn = React.useMemo(
     () => ({
       Filter: "",
@@ -111,35 +113,19 @@ console.log(masterTitle,"masterTitle") ;
     onColumnFilter(filtersWithKeys);
     // alert(JSON.stringify(filtersWithKeys) + " " + filters?.length);
   }, [filters]);
- const fetchDownload = async (id) => {
+  const navigate = useNavigate();
+
+  const fetchDocument = async (id) => {
     try {
-        debugger;
-        //const fileNames = fileName.split('|')[0];
-        const response = await publicAxios.get(`${ApiKey.downloadDeliverychallan}/${id}`, {
-            responseType: 'blob', // Ensure we receive the file as a blob
-          });
-          
-          console.log(response, "res");
-      
-          // Ensure the correct MIME type for .docx files
-          const blob = response.data;
-        const url = window.URL.createObjectURL(new Blob([blob], { type: "application/pdf" }));
-          //const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute("download", "Delivery Challan" ); // Specify the file name (e.g., fileName.jpg)
-          document.body.appendChild(link);
-          link.click(); // Trigger the download
-      
-          // Cleanup the URL object
-          window.URL.revokeObjectURL(url);
-      
-        
-        }
-    catch (error) {
-        console.error("Download failed:", error);
-      }
-    };
+      const response = await publicAxios.get(`${ApiKey.downloadDeliverychallan}/${id}`, {
+        responseType: "blob",
+      });
+      const url = URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
+      navigate("/main/pdfViewerPage", { state: { pdfFile: url, userId: id } });
+    } catch (error) {
+      console.error("Failed to fetch delivery challan:", error);
+    }
+  };
   return (
     <TableContainer>
       <TableCmpHeader
@@ -157,7 +143,7 @@ console.log(masterTitle,"masterTitle") ;
         hideSearchFilter={!!hideSearchFilter}
         displayedTableData={page.map((row) => row.original)}
         onFullExport={onFullExport}
-        
+
       />
       <div className="table-responsive">
         <table
@@ -253,13 +239,14 @@ console.log(masterTitle,"masterTitle") ;
                               <FaEdit color="#fff" size={14} />
                             </span>
                           )}
-                          {masterTitle==="Delivery Challan"&& (
+                          {masterTitle === "Delivery Challan" && (
                             <span
-                                                        onClick={() => fetchDownload(row.original.id)}
-                                                        className="btn btn_dark me-4 px-2 py-1"
-                                                      >
-                                                        <FaDownload color="#fff" size={13} />
-                                                      </span>
+                              onClick={() => fetchDocument(row.original.id)}
+                              className="btn btn_dark me-4 px-2 py-1"
+                              title="Print Delivery Challan"
+                            >
+                              <FaPrint color="#fff" size={13} />
+                            </span>
                           )}
                           {!!deleteable && (
                             <span
@@ -269,7 +256,7 @@ console.log(masterTitle,"masterTitle") ;
                               <FaTrashAlt color="#fff" size={12} />
                             </span>
                           )}
-                          
+
                         </div>
                       </td>
                     )}

@@ -28,16 +28,16 @@ const ModalForm = (props) => {
     stockOptions, // Pass materialOptions as a prop
     unitsOptions, // Pass unitsOptions as a prop
   } = props;
-console.log(formItems,"formItems");
-console.log(stockOptions,"stock");
+  console.log(formItems, "formItems");
+  console.log(stockOptions, "stock");
   const [showMediaModal, setshowMediaModal] = useState(false);
   const [mediaDataIs, setmediaDataIs] = useState("");
   const [loading, setloading] = useState(false);
   const [gridData, setGridData] = useState([]);
   const gridApi = useRef(null);
   const gridColumnApi = useRef(null);
-  let  taxableValue = 0;
-  let totalQty =0;
+  let taxableValue = 0;
+  let totalQty = 0;
   //const [viewOnly, setViewOnly] = useState(false);
   const {
     register,
@@ -58,74 +58,74 @@ console.log(stockOptions,"stock");
   // Define columns for Ag-Grid
   const columns = [
     { headerName: "SI.No", field: "sno", editable: !viewOnly, required: true },
-  {
-    headerName: "Description of Goods",
-    field: "descriptionofgoods",
-    editable: !viewOnly,
-    required: true,
-  },
-  {
-    headerName: "HSN/SAC",
-    field: "hsnsac",
-    editable: false,
-    required: true,
-  },
-  {
-    headerName: "Quantity",
-    field: "quantity",
-    editable: !viewOnly,
-    //required: true,
-    valueGetter: (params) => {
-      debugger;
-      const stock = stockOptions.find(
-        (stock) => stock.materialName === "ReadyToDispatchBricks"
-      );
-      return params.data.quantity || (stock ? stock.currentStocks : 0);
+    {
+      headerName: "Description of Goods",
+      field: "descriptionofgoods",
+      editable: !viewOnly,
+      required: true,
     },
-    /*valueSetter: (params) => {
-      debugger;
-      const stock = stockOptions.find(
-        (stock) => stock.materialName === "ReadyToDispatchBricks"
-      );
-      if (stock) {
-        const newQuantity = parseInt(params.newValue, 10);
-          const oldQuantity = stock.currentStocks ;
-        // Avoid recursion by checking if the value is actually different
-        if (params.data.quantity !== newQuantity) {
-          params.data.quantity = newQuantity;
-          params.data.oldQuantity = oldQuantity;
-          /*const stockIndex = stockOptions.findIndex(
-            (stock) => stock.materialName === "ReadyToDispatchBricks"
-          );
-          if (stockIndex !== -1) {
-            stockOptions[stockIndex].currentStocks = newQuantity;
-          }*/
-    
-          /*params.node.setDataValue("quantity", newQuantity);
-        }
-    
-        return true;
-      }
-      return false;*/
+    {
+      headerName: "HSN/SAC",
+      field: "hsnsac",
+      editable: false,
+      required: true,
+    },
+    {
+      headerName: "Quantity",
+      field: "quantity",
+      editable: !viewOnly,
+      //required: true,
+      valueGetter: (params) => {
+        debugger;
+        const stock = stockOptions.find(
+          (stock) => stock.materialName === "ReadyToDispatchBricks"
+        );
+        return params.data.quantity || (stock ? stock.currentStocks : 0);
+      },
+      /*valueSetter: (params) => {
+        debugger;
+        const stock = stockOptions.find(
+          (stock) => stock.materialName === "ReadyToDispatchBricks"
+        );
+        if (stock) {
+          const newQuantity = parseInt(params.newValue, 10);
+            const oldQuantity = stock.currentStocks ;
+          // Avoid recursion by checking if the value is actually different
+          if (params.data.quantity !== newQuantity) {
+            params.data.quantity = newQuantity;
+            params.data.oldQuantity = oldQuantity;
+            /*const stockIndex = stockOptions.findIndex(
+              (stock) => stock.materialName === "ReadyToDispatchBricks"
+            );
+            if (stockIndex !== -1) {
+              stockOptions[stockIndex].currentStocks = newQuantity;
+            }*/
+
+      /*params.node.setDataValue("quantity", newQuantity);
+    }
+ 
+    return true;
+  }
+  return false;*/
       valueSetter: (params) => {
         debugger;
         const stock = stockOptions.find(
           (stock) => stock.materialName === "ReadyToDispatchBricks"
         );
-    
+
         if (stock) {
           debugger;
           const newQuantity = parseInt(params.newValue, 10); // Parse the new value
           const oldQuantity = stock.currentStocks;
-    
+
           // Validate the input
           if (!isNaN(newQuantity) && newQuantity <= stock.currentStocks) {
             if (params.data.quantity !== newQuantity) {
               params.data.quantity = newQuantity; // Update the value
               params.data.oldQuantity = oldQuantity;
-    
+
               params.node.setDataValue("quantity", newQuantity); // Update grid display
-              
+
             }
             return true; // Indicate success
           } else {
@@ -139,9 +139,9 @@ console.log(stockOptions,"stock");
         return false; // Reject the input if stock is not found
       },
     },
-     
-  
-    { headerName: "Rate", field: "rate", editable: !viewOnly , required: true,},
+
+
+    { headerName: "Rate", field: "rate", editable: !viewOnly, required: true, },
     /*{
       headerName: "Rate",
       field: "rate",
@@ -155,7 +155,7 @@ console.log(stockOptions,"stock");
         return true;
       },
     },*/
-    { headerName: "Per", field: "per", editable: false , required: true,},
+    { headerName: "Per", field: "per", editable: false, required: true, },
     {
       headerName: "Amount",
       field: "amount",
@@ -169,76 +169,76 @@ console.log(stockOptions,"stock");
       },
     },
     //{ headerName: "Amount", field: "amount", editable: !viewOnly, required: true,}
-        
-    
+
+
   ];
-  
+
   const hsnsac = localStorage.getItem("hsnsac");
 
 
   // Handle row addition
   const handleAddRow = () => {
     if (!viewOnly) {
-      
+
       const newRow = {
         sno: gridData.length + 1, // Use index-based ID (index + 1)
         descriptionofgoods: "",
         hsnsac: hsnsac,
         quantity: 0,
-        rate:0,
-        per:"Nos",
-        amount:0
+        rate: 0,
+        per: "Nos",
+        amount: 0
 
       };
       setGridData([...gridData, newRow]);
     }
   };
-// Function to update the row dynamically
-const updateAmount = (index, rate, quantity) => {
-  debugger;
+  // Function to update the row dynamically
+  const updateAmount = (index, rate, quantity) => {
+    debugger;
     const updatedGridData = [...gridData];
-   /* updatedGridData[index].rate = parseFloat(rate) || 0;
-    updatedGridData[index].quantity = parseFloat(quantity) || 0;
-    updatedGridData[index].amount = updatedGridData[index].rate * updatedGridData[index].quantity;
-  
-    setGridData(updatedGridData); // Update grid data
-    recalculateTaxableValue(updatedGridData); // Update taxable value*/
+    /* updatedGridData[index].rate = parseFloat(rate) || 0;
+     updatedGridData[index].quantity = parseFloat(quantity) || 0;
+     updatedGridData[index].amount = updatedGridData[index].rate * updatedGridData[index].quantity;
+   
+     setGridData(updatedGridData); // Update grid data
+     recalculateTaxableValue(updatedGridData); // Update taxable value*/
     const stock = stockOptions.find(
       (stock) => stock.materialName === "ReadyToDispatchBricks"
     );
-  
+
     // If rate changes, calculate amount using current stock * rate
     if (rate) {
       updatedGridData[index].rate = parseFloat(rate) || 0;
       updatedGridData[index].amount =
         (stock ? stock.currentStocks : 0) * parseFloat(rate);
     }
-  
+
     // If quantity changes, use the entered quantity to calculate the amount
     if (quantity) {
       updatedGridData[index].quantity = parseFloat(quantity) || 0;
       updatedGridData[index].amount =
         updatedGridData[index].rate * updatedGridData[index].quantity;
     }
-  
+
     setGridData(updatedGridData); // Update grid data
     recalculateTaxableValue(updatedGridData); // Update taxable value
   };
-  
-  
+
+
   // Function to recalculate taxableValue
   const recalculateTaxableValue = (data) => {
     const total = data.reduce((sum, row) => sum + (row.amount || 0), 0);
     taxableValue = total; // Update taxableValue variable
     const quantitytotal = data.reduce((sum, row) => sum + (row.quantity || 0), 0);
-    totalQty=quantitytotal;
+    totalQty = quantitytotal;
     console.log("Taxable Value:", taxableValue);
   };
-  
+
   // Event Handler for Cell Value Changes
   const handleCellValueChanged = (params) => {
     debugger;
-    if (params.colDef.field === "rate" || params.colDef.field === "quantity" ) {
+    if (params.colDef.field === "rate" || params.colDef.field === "quantity") {
       const { rowIndex, data } = params;
       updateAmount(rowIndex, data.rate, data.quantity);
     }
@@ -300,42 +300,42 @@ const updateAmount = (index, rate, quantity) => {
   };*/
   const [saving, setSaving] = useState(false);
 
-const onSubmitData = async (data) => {
-  if (saving) return; 
+  const onSubmitData = async (data) => {
+    if (saving) return;
 
-  const hasEmptyFields = gridData.some((row) => {
-    return Object.keys(row).some((key) => {
-      const column = columns.find((col) => col.field === key);
-      return column?.required && !row[key];
+    const hasEmptyFields = gridData.some((row) => {
+      return Object.keys(row).some((key) => {
+        const column = columns.find((col) => col.field === key);
+        return column?.required && !row[key];
+      });
     });
-  });
 
-  if (hasEmptyFields) {
-    alert("All fields in the grid are required.");
-    return;
-  }
-
-  setSaving(true); 
-
-  try {
-    const formData = {
-      ...data,
-      goodsInformation: gridData,
-      taxableValue: taxableValue,
-      totalQty: totalQty,
-    };
-
-    if (onEditData) {
-      await onUpdate({ ...onEditData, ...formData }); 
-    } else {
-      await onSave(formData); 
+    if (hasEmptyFields) {
+      alert("All fields in the grid are required.");
+      return;
     }
-  } catch (error) {
-    console.error("Submit failed:", error);
-  } finally {
-    setSaving(false); 
-  }
-};
+
+    setSaving(true);
+
+    try {
+      const formData = {
+        ...data,
+        goodsInformation: gridData,
+        taxableValue: taxableValue,
+        totalQty: totalQty,
+      };
+
+      if (onEditData) {
+        await onUpdate({ ...onEditData, ...formData });
+      } else {
+        await onSave(formData);
+      }
+    } catch (error) {
+      console.error("Submit failed:", error);
+    } finally {
+      setSaving(false);
+    }
+  };
 
 
   const onClose = () => {
@@ -403,13 +403,13 @@ const onSubmitData = async (data) => {
       // Ensure the goodsInformation array is correctly populated
       setGridData(
         gridgoodsInformation.map((goodsInformation) => ({
-            sno: goodsInformation.sno, // Ensure there's an id for each material
-            descriptionofgoods: goodsInformation.descriptionofgoods,
-            hsnsac: goodsInformation.hsnsac,
-            rate: goodsInformation.rate,
+          sno: goodsInformation.sno, // Ensure there's an id for each material
+          descriptionofgoods: goodsInformation.descriptionofgoods,
+          hsnsac: goodsInformation.hsnsac,
+          rate: goodsInformation.rate,
           per: goodsInformation.per,
           quantity: goodsInformation.quantity || 0,
-          amount:goodsInformation.amount // Set quantity to 0 if undefined
+          amount: goodsInformation.amount // Set quantity to 0 if undefined
         }))
       );
     }
@@ -425,16 +425,16 @@ const onSubmitData = async (data) => {
         centered
         size={size ? size : "lg"}
       >
-       <Modal.Header closeButton>
-        <Modal.Title style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-          <div>
-            {viewOnly
-              ? `View ${title}`
-              : onEditData
-              ? `Edit ${title}`
-              : `Add ${title}`}
-          </div>
-          {/*{(viewOnly || onEditData) && (
+        <Modal.Header closeButton>
+          <Modal.Title style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+            <div>
+              {viewOnly
+                ? `View ${title}`
+                : onEditData
+                  ? `Edit ${title}`
+                  : `Add ${title}`}
+            </div>
+            {/*{(viewOnly || onEditData) && (
             <Button
               variant="primary"
               size="sm"
@@ -444,8 +444,8 @@ const onSubmitData = async (data) => {
               Download
             </Button>
           )}*/}
-        </Modal.Title>
-      </Modal.Header>
+          </Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <ModalFormContainer onSubmit={handleSubmit(onSubmitData)}>
             <div className="modal-body" id="load_add_form">
@@ -506,32 +506,32 @@ const onSubmitData = async (data) => {
                   alignItems: "center",
                 }}
               >
-                
-                    <Button
-                      variant="primary"
-                      onClick={handleAddRow}
-                      style={{ marginRight: "3px" }}
-                      disabled={viewOnly}
-                    >
-                      Add Material
-                    </Button>
-                    <Button
-                      variant="primary"
-                      onClick={handleDeleteRow}
-                      style={{ marginRight: "3px" }}
-                      disabled={viewOnly}
-                    >
-                      Delete Material
-                    </Button>
-                 
-              
+
+                <Button
+                  variant="primary"
+                  onClick={handleAddRow}
+                  style={{ marginRight: "3px" }}
+                  disabled={viewOnly}
+                >
+                  Add Material
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleDeleteRow}
+                  style={{ marginRight: "3px" }}
+                  disabled={viewOnly}
+                >
+                  Delete Material
+                </Button>
+
+
               </div>
 
               <div
                 className="ag-theme-alpine"
                 style={{ height: 400, width: "100%" }}
               >
-                 
+
                 <AgGridReact
                   onGridReady={onGridReady}
                   columnDefs={columns}
@@ -543,7 +543,7 @@ const onSubmitData = async (data) => {
                   pagination={false} // Removed pagination as requested
                   onCellValueChanged={handleCellValueChanged}
                 />
-               
+
               </div>
             </div>
             {/* Add Material Button */}
@@ -555,11 +555,11 @@ const onSubmitData = async (data) => {
                   Cancel
                 </Button>
                 <Button className="btn_dark" type="submit" disabled={saving}>
-                {!!onEditData ? "Update" : "Save"}{" "}
-               {saving && (
-               <div className="spinner-border text-light" role="status"></div>
-                )}
-              </Button>
+                  {!!onEditData ? "Update" : "Save"}{" "}
+                  {saving && (
+                    <div className="spinner-border text-light" role="status"></div>
+                  )}
+                </Button>
 
               </div>
             </RenderIf>
