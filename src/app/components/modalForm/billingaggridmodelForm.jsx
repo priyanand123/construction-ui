@@ -320,11 +320,17 @@ const ModalForm = (props) => {
     try {
       const formData = {
         ...data,
+
+        // Preserve GST value when checkbox is disabled during edit
+        isGSTInclude:
+          data.isGSTInclude !== undefined
+            ? data.isGSTInclude
+            : onEditData?.isGSTInclude,
+
         goodsInformation: gridData,
         taxableValue: taxableValue,
         totalQty: totalQty,
       };
-
       if (onEditData) {
         await onUpdate({ ...onEditData, ...formData });
       } else {
