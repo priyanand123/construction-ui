@@ -628,23 +628,15 @@ const DeliveryChalen = () => {
 
       },
 
-      {
-
-        Header: "Date",
-
-        accessor: "dated",
-
-        Filter: TextSearchFilter,
-
-        Cell: (props) =>
-
-          props.value
-
-            ? moment.utc(props.value).local().format("DD/MM/YYYY")
-
-            : "",
-
-      },
+     {
+  Header: "Delivery Note Date",
+  accessor: "deliveryNoteDate",
+  Filter: TextSearchFilter,
+  Cell: (props) =>
+    props.value
+      ? moment.utc(props.value).local().format("DD/MM/YYYY")
+      : "",
+},
 
       {
 
