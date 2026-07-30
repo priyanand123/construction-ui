@@ -43,11 +43,12 @@ export const addNewMachinelogReq = async (data) => {
   try {
     debugger;
     const res = await publicAxios.post(`${ApiKey.Machinelog}`, data);
-
+ debugger; 
     const msg = res.data.message;
     const _data = res.data;
     return { error: false, data: _data, message: msg, errorMsg: "" };
   } catch (err) {
+    debugger;   
     let error;
     if (err.response) error = err.response.data.message || "Response error";
     else if (err.request) error = "Request error";
@@ -74,6 +75,7 @@ export const updateMachinelogReq = async (data) => {
 
 export const deleteMachinelogReq = async (userId) => {
   try {
+    debugger;
     const res = await publicAxios.delete(
       `${ApiKey.Machinelog}/${userId}`
     );

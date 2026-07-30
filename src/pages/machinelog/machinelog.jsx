@@ -94,8 +94,9 @@ const addMaterial = () => {
 
 
   const createData = async (formData) => {
+     debugger;
     try {
-      debugger;
+     
 
       const normalizeTimeSpan = (value) => {
         if (!value || typeof value !== "string") return "00:00:00";
@@ -132,8 +133,11 @@ const addMaterial = () => {
         createdBy: RoleNames || "",
         //*createdDate: new Date(),
       };
-
+debugger;
+console.log(dataBody);
       const resp = await addNewMachinelog(dataBody, dispatch);
+      debugger;              
+console.log(resp); 
       Swal.fire({
         title: "Awesome!",
         text: `New ${configData.masterTitle} Added`,
@@ -142,6 +146,7 @@ const addMaterial = () => {
       closeModal();
       setdataLoading(true);
     } catch (error) {
+      debugger;       
       console.log(error);
       closeModal();
     }
